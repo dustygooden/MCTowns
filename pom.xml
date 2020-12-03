@@ -4,43 +4,43 @@
 
   <groupId>cafe.josh</groupId>
   <artifactId>MCTowns</artifactId>
-  <version>2.5.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>MCTowns</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/dustygooden/MCTowns</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <scm>
-    <connection>scm:git:git://github.com:jmhertlein/MCTowns.git</connection>
+    <connection>scm:git:git://github.com:dustygooden/MCTowns.git</connection>
   </scm>
 
   <dependencies>
     <dependency>
-      <groupId>com.sk89q</groupId>
-      <artifactId>worldguard</artifactId>
-      <version>6.1</version>
+      <groupId>com.sk89q.worldguard</groupId>
+      <artifactId>worldguard-bukkit</artifactId>
+      <version>7.0.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.sk89q</groupId>
-      <artifactId>worldedit</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <groupId>com.sk89q.worldedit</groupId>
+      <artifactId>worldedit-bukkit</artifactId>
+      <version>7.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.9.2-R0.1-SNAPSHOT</version>
+      <version>1.16.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>cafe.josh</groupId>
+      <groupId>net.jmhertlein</groupId>
       <artifactId>EverCoreUtils</artifactId>
-      <version>4.0-SNAPSHOT</version>
+      <version>5.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -58,8 +58,19 @@
     <dependency>
       <groupId>cafe.josh</groupId>
       <artifactId>reflective</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>2.0-SNAPSHOT</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>17.0</version>
+	</dependency>
+	<dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -69,16 +80,12 @@
       <url>http://nexus.hc.to/content/repositories/pub_releases</url>
     </repository>
     <repository>
-      <id>jmh-repo</id>
-      <url>https://maven.josh.cafe/</url>
-    </repository>
-    <repository>
       <id>spigot-nexus-snaps</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
     <repository>
       <id>sk89q-repo</id>
-      <url>http://maven.sk89q.com/repo/</url>
+      <url>https://maven.enginehub.org/repo/</url>
     </repository>
     <repository>
       <id>Plugin Metrics</id>
@@ -91,15 +98,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.2</version>
+        <version>3.6.1</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
           <annotationProcessors>
-            <annotationProcessor>
-              cafe.josh.reflective.processor.CommandMethodProcessor
-            </annotationProcessor>
+            <annotationProcessor>cafe.josh.reflective.processor.CommandMethodProcessor</annotationProcessor>
           </annotationProcessors>
+          <annotationProcessorPaths>
+          	<annotationProcessorPath>
+          		<groupId>cafe.josh</groupId>
+          		<artifactId>reflective</artifactId>
+          		<version>2.0-SNAPSHOT</version>
+          	</annotationProcessorPath>
+          </annotationProcessorPaths>
           <compilerArgument>-parameters</compilerArgument>
         </configuration>
       </plugin>
@@ -169,6 +181,22 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -180,9 +208,7 @@
       <url>scpexe://maven.josh.cafe/var/www/maven</url>
     </repository>
   </distributionManagement>
-  <description>A flexible town-management plugin for the Bukkit API, using the popular WorldGuard plugin for regions and
-    WorldEdit for selection.
-  </description>
+  <description>A flexible town-management plugin for the Bukkit API, using the popular WorldGuard plugin for regions and WorldEdit for selection.</description>
   <licenses>
     <license>
       <name>The GNU General Public License, version 3</name>

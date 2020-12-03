@@ -21,6 +21,9 @@ import cafe.josh.mctowns.command.ActiveSet;
 import cafe.josh.mctowns.region.Plot;
 import cafe.josh.mctowns.region.Territory;
 import cafe.josh.mctowns.region.Town;
+
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -91,8 +94,9 @@ public class QuickSelectToolListener implements Listener {
         }
 
         Location spotClicked = b.getLocation();
-
-        ApplicableRegionSet regs = wgp.getRegionManager(e.getPlayer().getWorld()).getApplicableRegions(spotClicked);
+        BlockVector3 spotClickedVector = BlockVector3.at(spotClicked.getX(), spotClicked.getY(), spotClicked.getZ());
+        //ApplicableRegionSet regs = wgp.getRegionManager(e.getPlayer().getWorld()).getApplicableRegions(spotClicked);
+        ApplicableRegionSet regs = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(e.getPlayer().getWorld())).getApplicableRegions(spotClickedVector);
 
         Town town = actives.getActiveTown();
 

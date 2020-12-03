@@ -1,6 +1,7 @@
 name: MCTowns
 main: cafe.josh.mctowns.MCTownsPlugin
-version: ${version}-${buildNumber}
+version: ${version}
+api-version: 1.16
 softdepend: [WorldGuard, Vault]
 commands:
     mct:

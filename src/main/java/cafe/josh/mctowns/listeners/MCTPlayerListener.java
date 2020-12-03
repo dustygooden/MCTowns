@@ -106,7 +106,7 @@ public class MCTPlayerListener implements Listener {
             return;
         }
 
-        if(event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.SIGN_POST) //If there is no block, or the block is not a sign, do nothing
+        if(event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.ACACIA_SIGN) //If there is no block, or the block is not a sign, do nothing
         {
             return;
         }
@@ -142,7 +142,7 @@ public class MCTPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerTriggerFenceRegionCreation(org.bukkit.event.block.SignChangeEvent e) {
-        if(e.getBlock().getType() != Material.SIGN_POST) {
+        if(e.getBlock().getType() != Material.ACACIA_SIGN) {
             return;
         }
 
@@ -205,7 +205,7 @@ public class MCTPlayerListener implements Listener {
         Vector deltaVector = signLoc.getDirection().multiply(-1);
 
         int count = 0;
-        while(signLoc.getBlock().getType() != Material.FENCE && count < 100) {
+        while(signLoc.getBlock().getType() != Material.ACACIA_FENCE && count < 100) {
             signLoc = signLoc.add(deltaVector);
             count++;
         }

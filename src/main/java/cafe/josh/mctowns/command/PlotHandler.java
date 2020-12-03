@@ -17,6 +17,9 @@
 package cafe.josh.mctowns.command;
 
 import cafe.josh.mctowns.util.Players;
+
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.math.BigDecimal;
@@ -79,7 +82,7 @@ public class PlotHandler extends CommandHandler implements CommandDefinition {
             return;
         }
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(plot.getWorldName()));
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(plot.getWorldName())));
 
         ProtectedRegion wgPlot = regMan.getRegion(plot.getName());
 
@@ -140,7 +143,7 @@ public class PlotHandler extends CommandHandler implements CommandDefinition {
             return;
         }
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(plot.getWorldName()));
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(plot.getWorldName())));
 
         ProtectedRegion wgPlot = regMan.getRegion(plot.getName());
 
@@ -320,7 +323,7 @@ public class PlotHandler extends CommandHandler implements CommandDefinition {
             return;
         }
 
-        ProtectedRegion reg = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(p.getWorldName())).getRegion(p.getName());
+        ProtectedRegion reg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(p.getWorldName()))).getRegion(p.getName());
 
         if(!reg.isOwner(MCTowns.getWorldGuardPlugin().wrapPlayer(localSender.getPlayer()))) {
             localSender.sendMessage(ERR + "You don't own this plot, so you can't surrender it!");
@@ -377,7 +380,7 @@ public class PlotHandler extends CommandHandler implements CommandDefinition {
     }
 
     @CommandMethod(path = "plot redefine")
-    public void redefine() {
+    public void redefine() throws IncompleteRegionException {
         redefineActiveRegion(TownLevel.PLOT);
     }
 }

@@ -16,7 +16,7 @@
  */
 package cafe.josh.mctowns.util;
 
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ProtectedFenceRegion extends ProtectedPolygonalRegion {
     private static final int NORTH = 0, SOUTH = 1, EAST = 2, WEST = 3, NONE = -1;
     private static final int FENCE_SEGMENT_THRESHOLD = 1000;
 
-    public ProtectedFenceRegion(String id, List<BlockVector2D> points, int minY, int maxY) {
+    public ProtectedFenceRegion(String id, List<BlockVector2> points, int minY, int maxY) {
         super(id, points, minY, maxY);
     }
 
@@ -58,7 +58,7 @@ public class ProtectedFenceRegion extends ProtectedPolygonalRegion {
      * exists a fence that touches more than exactly two fences)
      */
     public static final ProtectedFenceRegion assembleSelectionFromFenceOrigin(String id, Location l) throws IncompleteFenceException, MalformedFenceRegionException {
-        LinkedList<BlockVector2D> points = new LinkedList<>();
+        LinkedList<BlockVector2> points = new LinkedList<>();
 
         Location cur;
         int dirToNext, cameFrom;
@@ -72,7 +72,7 @@ public class ProtectedFenceRegion extends ProtectedPolygonalRegion {
             //if there was a corner in the fence...
             if(getOppositeDir(cameFrom) != dirToNext) //add it to the polygon
             {
-                points.add(new BlockVector2D(cur.getBlockX(), cur.getBlockZ()));
+                points.add(BlockVector2.at(cur.getBlockX(), cur.getBlockZ()));
             }
 
             switch(dirToNext) {
@@ -107,25 +107,25 @@ public class ProtectedFenceRegion extends ProtectedPolygonalRegion {
 
     private static final int getDirToNextFence(int cameFrom, Location l) {
         if(cameFrom != SOUTH) {
-            if(l.clone().add(0, 0, -1).getBlock().getType() == Material.FENCE) {
+            if(l.clone().add(0, 0, -1).getBlock().getType() == Material.BIRCH_FENCE) {
                 return SOUTH;
             }
         }
 
         if(cameFrom != NORTH) {
-            if(l.clone().add(0, 0, 1).getBlock().getType() == Material.FENCE) {
+            if(l.clone().add(0, 0, 1).getBlock().getType() == Material.BIRCH_FENCE) {
                 return NORTH;
             }
         }
 
         if(cameFrom != EAST) {
-            if(l.clone().add(1, 0, 0).getBlock().getType() == Material.FENCE) {
+            if(l.clone().add(1, 0, 0).getBlock().getType() == Material.BIRCH_FENCE) {
                 return EAST;
             }
         }
 
         if(cameFrom != WEST) {
-            if(l.clone().add(-1, 0, 0).getBlock().getType() == Material.FENCE) {
+            if(l.clone().add(-1, 0, 0).getBlock().getType() == Material.BIRCH_FENCE) {
                 return WEST;
             }
         }

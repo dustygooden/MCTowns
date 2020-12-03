@@ -17,7 +17,9 @@
 package cafe.josh.mctowns.region;
 
 import cafe.josh.mctowns.bank.BlockBank;
-import com.sk89q.worldedit.Vector;
+
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import java.math.BigDecimal;
 import java.util.*;
@@ -440,8 +442,8 @@ public class Town {
      */
     public boolean playerIsInsideTownBorders(Player p) {
         org.bukkit.Location playerLoc = p.getLocation();
-        Vector playerVector = new Vector(playerLoc.getBlockX(), playerLoc.getBlockY(), playerLoc.getBlockZ());
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(p.getWorld());
+        BlockVector3 playerVector = BlockVector3.at(playerLoc.getBlockX(), playerLoc.getBlockY(), playerLoc.getBlockZ());
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(p.getWorld()));
 
         return getTerritoriesCollection().stream()
                 .map(name -> MCTowns.getTownManager().getTerritory(name))
@@ -566,6 +568,7 @@ public class Town {
         t.townMOTD = f.getString("motd");
         t.motdColor = ChatColor.valueOf(f.getString("motdColor"));
         t.warps = (Map<String, Location>) (Map) ((MemorySection) f.get("warps")).getValues(true);
+        
 
         t.mayor = UUIDs.stringToId(f.getString("mayor"));
         t.territories = new HashSet<>(f.getStringList("territs"));

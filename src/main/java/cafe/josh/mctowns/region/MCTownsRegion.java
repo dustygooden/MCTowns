@@ -16,6 +16,7 @@
  */
 package cafe.josh.mctowns.region;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -87,7 +88,7 @@ public abstract class MCTownsRegion {
             return false;
         }
 
-        ProtectedRegion reg = wgp.getRegionManager(w).getRegion(name);
+        ProtectedRegion reg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w)).getRegion(name);
         if(reg == null) {
             return false;
         }
@@ -128,7 +129,7 @@ public abstract class MCTownsRegion {
             return false;
         }
 
-        ProtectedRegion reg = MCTowns.getWorldGuardPlugin().getRegionManager(w).getRegion(name);
+        ProtectedRegion reg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w)).getRegion(name);
         if(reg == null) {
             return false;
         }
@@ -148,7 +149,7 @@ public abstract class MCTownsRegion {
             return false;
         }
 
-        ProtectedRegion reg = MCTowns.getWorldGuardPlugin().getRegionManager(w).getRegion(name);
+        ProtectedRegion reg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w)).getRegion(name);
         if(reg == null) {
             return false;
         }
@@ -168,7 +169,7 @@ public abstract class MCTownsRegion {
     }
 
     public ProtectedRegion getWGRegion() {
-        return MCTowns.getWorldGuardPlugin().getRegionManager(Bukkit.getServer().getWorld(worldName)).getRegion(name);
+        return MCTowns.getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getServer().getWorld(worldName))).getRegion(name);
     }
 
     @Override

@@ -48,7 +48,7 @@ public enum MCTConfig {
     }
 
     public void set(Object value) {
-        MCTownsPlugin.getPlugin().getConfig().set(getKey(), value);
+        MCTownsPlugin.getPlugin().getConfig().set(getString(), value);
     }
 
     public Object getObject() {

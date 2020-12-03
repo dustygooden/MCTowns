@@ -16,7 +16,8 @@
  */
 package cafe.josh.mctowns.region;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.math.BigDecimal;
@@ -161,14 +162,16 @@ public class Plot extends MCTownsRegion {
             return false;
         }
 
-        loc.getBlock().setType(Material.SIGN_POST);
+        loc.getBlock().setType(Material.ACACIA_SIGN);
 
         Sign sign = (Sign) loc.getBlock().getState();
 
-        org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
-        signData.setFacingDirection(Location.getBlockFaceFromYaw(Location.getYawInOppositeDirection(referencePlayerLocation.getYaw())));
-        sign.setData(signData);
-
+        //org.bukkit.block.Sign signData = (org.bukkit.block.Sign) sign.getData();
+        //signData.setFacingDirection(Location.getBlockFaceFromYaw(Location.getYawInOppositeDirection(referencePlayerLocation.getYaw())));
+        //sign.setData(signData);
+        
+        
+        
         sign.setLine(0, "[mct]");
         sign.setLine(1, "For sale!");
         sign.setLine(2, name);
@@ -190,8 +193,8 @@ public class Plot extends MCTownsRegion {
      */
     public final void calculateSignLoc() {
         WorldGuardPlugin wgp = MCTowns.getWorldGuardPlugin();
-        ProtectedRegion reg = wgp.getRegionManager(wgp.getServer().getWorld(worldName)).getRegion(name);
-        Vector middle = reg.getMaximumPoint().add(reg.getMinimumPoint());
+        ProtectedRegion reg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getServer().getWorld(worldName))).getRegion(name);
+        BlockVector3 middle = reg.getMaximumPoint().add(reg.getMinimumPoint());
         middle = middle.divide(2);
 
         org.bukkit.Location loc = new org.bukkit.Location(wgp.getServer().getWorld(worldName), middle.getBlockX(), middle.getBlockY(), middle.getBlockZ());

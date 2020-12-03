@@ -20,6 +20,8 @@ import cafe.josh.mctowns.region.MCTownsRegion;
 import cafe.josh.mctowns.region.Plot;
 import cafe.josh.mctowns.region.Town;
 import cafe.josh.mctowns.region.TownLevel;
+
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -133,8 +135,7 @@ public class TownManager {
                 parentTown.getName());
 
         addMCTRegion(t, worldTerritoryIsIn, reg);
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(
-                worldTerritoryIsIn);
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(worldTerritoryIsIn));
         try {
             regMan.save();
         } catch(StorageException ex) {
@@ -167,8 +168,7 @@ public class TownManager {
         addMCTRegion(p, worldPlotIsIn, reg);
 
         parentTerritory.addPlot(p);
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(
-                worldPlotIsIn);
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(worldPlotIsIn));
         try {
             reg.setParent(regMan.getRegion(parentTerritory.getName()));
         } catch(CircularInheritanceException ex) {
@@ -188,7 +188,7 @@ public class TownManager {
     }
 
     private void addMCTRegion(MCTownsRegion mctReg, World w, ProtectedRegion reg) throws InvalidWorldGuardRegionNameException, RegionAlreadyExistsException {
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(w);
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w));
         if(!ProtectedRegion.isValidId(mctReg.getName())) {
             throw new InvalidWorldGuardRegionNameException(mctReg.getName());
         }
@@ -295,7 +295,7 @@ public class TownManager {
             return true;
         }
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(w);
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w));
 
         regMan.removeRegion(territ.getName());
 
@@ -334,7 +334,7 @@ public class TownManager {
             return true;
         }
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(w);
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w));
 
         regMan.removeRegion(plotName);
 

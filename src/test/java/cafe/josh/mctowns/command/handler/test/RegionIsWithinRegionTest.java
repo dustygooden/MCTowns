@@ -17,8 +17,8 @@
 package cafe.josh.mctowns.command.handler.test;
 
 import cafe.josh.mctowns.command.CommandHandler;
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -35,21 +35,22 @@ import static org.junit.Assert.*;
 public class RegionIsWithinRegionTest {
     @Test
     public void testPentagonIsWithinPentagon() {
-        List<BlockVector2D> interiorRegPoints, exteriorRegPoints;
+        List<BlockVector2> interiorRegPoints, exteriorRegPoints;
         interiorRegPoints = new LinkedList<>();
         exteriorRegPoints = new LinkedList<>();
+        
+        BlockVector2 block = BlockVector2.at(0, 0);
+        interiorRegPoints.add(BlockVector2.at(-1, 1));
+        interiorRegPoints.add(BlockVector2.at(1, 1));
+        interiorRegPoints.add(BlockVector2.at(2, 0));
+        interiorRegPoints.add(BlockVector2.at(1, -1));
+        interiorRegPoints.add(BlockVector2.at(-1, -1));
 
-        interiorRegPoints.add(new BlockVector2D(-1, 1));
-        interiorRegPoints.add(new BlockVector2D(1, 1));
-        interiorRegPoints.add(new BlockVector2D(2, 0));
-        interiorRegPoints.add(new BlockVector2D(1, -1));
-        interiorRegPoints.add(new BlockVector2D(-1, -1));
-
-        exteriorRegPoints.add(new BlockVector2D(-4, 2));
-        exteriorRegPoints.add(new BlockVector2D(0, 4));
-        exteriorRegPoints.add(new BlockVector2D(4, 2));
-        exteriorRegPoints.add(new BlockVector2D(4, -4));
-        exteriorRegPoints.add(new BlockVector2D(-5, -3));
+        exteriorRegPoints.add(BlockVector2.at(-4, 2));
+        exteriorRegPoints.add(BlockVector2.at(0, 4));
+        exteriorRegPoints.add(BlockVector2.at(4, 2));
+        exteriorRegPoints.add(BlockVector2.at(4, -4));
+        exteriorRegPoints.add(BlockVector2.at(-5, -3));
 
         ProtectedPolygonalRegion interiorReg, exteriorReg;
 
@@ -62,20 +63,20 @@ public class RegionIsWithinRegionTest {
 
     @Test
     public void testPolygonIsNotWithinConcavePolygon() {
-        List<BlockVector2D> interiorRegPoints, exteriorRegPoints;
+        List<BlockVector2> interiorRegPoints, exteriorRegPoints;
         interiorRegPoints = new LinkedList<>();
         exteriorRegPoints = new LinkedList<>();
 
-        exteriorRegPoints.add(new BlockVector2D(-5, 5));
-        exteriorRegPoints.add(new BlockVector2D(0, 0));
-        exteriorRegPoints.add(new BlockVector2D(5, 5));
-        exteriorRegPoints.add(new BlockVector2D(5, -5));
-        exteriorRegPoints.add(new BlockVector2D(-5, -5));
+        exteriorRegPoints.add(BlockVector2.at(-5, 5));
+        exteriorRegPoints.add(BlockVector2.at(0, 0));
+        exteriorRegPoints.add(BlockVector2.at(5, 5));
+        exteriorRegPoints.add(BlockVector2.at(5, -5));
+        exteriorRegPoints.add(BlockVector2.at(-5, -5));
 
-        interiorRegPoints.add(new BlockVector2D(-3, 1));
-        interiorRegPoints.add(new BlockVector2D(4, 1));
-        interiorRegPoints.add(new BlockVector2D(4, -3));
-        interiorRegPoints.add(new BlockVector2D(-3, -3));
+        interiorRegPoints.add(BlockVector2.at(-3, 1));
+        interiorRegPoints.add(BlockVector2.at(4, 1));
+        interiorRegPoints.add(BlockVector2.at(4, -3));
+        interiorRegPoints.add(BlockVector2.at(-3, -3));
 
         ProtectedPolygonalRegion interiorReg, exteriorReg;
 
@@ -88,20 +89,20 @@ public class RegionIsWithinRegionTest {
 
     @Test
     public void testPolygonWithPointOutsideIsNotWithinPolygon() {
-        List<BlockVector2D> interiorRegPoints, exteriorRegPoints;
+        List<BlockVector2> interiorRegPoints, exteriorRegPoints;
         interiorRegPoints = new LinkedList<>();
         exteriorRegPoints = new LinkedList<>();
 
-        exteriorRegPoints.add(new BlockVector2D(-5, 5));
-        exteriorRegPoints.add(new BlockVector2D(5, 5));
-        exteriorRegPoints.add(new BlockVector2D(5, -5));
-        exteriorRegPoints.add(new BlockVector2D(-5, -5));
+        exteriorRegPoints.add(BlockVector2.at(-5, 5));
+        exteriorRegPoints.add(BlockVector2.at(5, 5));
+        exteriorRegPoints.add(BlockVector2.at(5, -5));
+        exteriorRegPoints.add(BlockVector2.at(-5, -5));
 
-        interiorRegPoints.add(new BlockVector2D(-3, 1));
-        interiorRegPoints.add(new BlockVector2D(0, 500));
-        interiorRegPoints.add(new BlockVector2D(4, 1));
-        interiorRegPoints.add(new BlockVector2D(4, -3));
-        interiorRegPoints.add(new BlockVector2D(-3, -3));
+        interiorRegPoints.add(BlockVector2.at(-3, 1));
+        interiorRegPoints.add(BlockVector2.at(0, 500));
+        interiorRegPoints.add(BlockVector2.at(4, 1));
+        interiorRegPoints.add(BlockVector2.at(4, -3));
+        interiorRegPoints.add(BlockVector2.at(-3, -3));
 
         ProtectedPolygonalRegion interiorReg, exteriorReg;
 
@@ -116,13 +117,13 @@ public class RegionIsWithinRegionTest {
     public void testCuboidIsWithinPolygon() {
         ProtectedRegion interior, exterior;
 
-        interior = new ProtectedCuboidRegion("interior", new BlockVector(-1, 0, -1), new BlockVector(1, 256, 1));
+        interior = new ProtectedCuboidRegion("interior", BlockVector3.at(-1, 0, -1), BlockVector3.at(1, 256, 1));
 
-        List<BlockVector2D> exteriorRegPoints = new LinkedList<>();
-        exteriorRegPoints.add(new BlockVector2D(-5, 5));
-        exteriorRegPoints.add(new BlockVector2D(5, 5));
-        exteriorRegPoints.add(new BlockVector2D(5, -5));
-        exteriorRegPoints.add(new BlockVector2D(-5, -5));
+        List<BlockVector2> exteriorRegPoints = new LinkedList<>();
+        exteriorRegPoints.add(BlockVector2.at(-5, 5));
+        exteriorRegPoints.add(BlockVector2.at(5, 5));
+        exteriorRegPoints.add(BlockVector2.at(5, -5));
+        exteriorRegPoints.add(BlockVector2.at(-5, -5));
         exterior = new ProtectedPolygonalRegion("exterior", exteriorRegPoints, 0, 256);
 
         assertTrue(CommandHandler.regionIsWithinRegion(interior, exterior));
@@ -133,8 +134,8 @@ public class RegionIsWithinRegionTest {
     public void testCuboidIsWithinCuboid() {
         ProtectedRegion interior, exterior;
 
-        interior = new ProtectedCuboidRegion("interior", new BlockVector(-1, 0, -1), new BlockVector(1, 256, 1));
-        exterior = new ProtectedCuboidRegion("exterior", new BlockVector(-3, 0, -3), new BlockVector(3, 256, 3));
+        interior = new ProtectedCuboidRegion("interior", BlockVector3.at(-1, 0, -1), BlockVector3.at(1, 256, 1));
+        exterior = new ProtectedCuboidRegion("exterior", BlockVector3.at(-3, 0, -3), BlockVector3.at(3, 256, 3));
 
         assertTrue(CommandHandler.regionIsWithinRegion(interior, exterior));
         assertFalse(CommandHandler.regionIsWithinRegion(exterior, interior));

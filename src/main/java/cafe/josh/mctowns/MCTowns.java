@@ -16,7 +16,10 @@
  */
 package cafe.josh.mctowns;
 
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+
 import java.util.logging.Level;
 import cafe.josh.mctowns.util.MCTConfig;
 import net.milkbowl.vault.economy.Economy;
@@ -77,7 +80,7 @@ public class MCTowns {
 
         return wgp;
     }
-
+    
     public static TownManager getTownManager() {
         return MCTownsPlugin.getPlugin().getTownManager();
     }
@@ -85,4 +88,9 @@ public class MCTowns {
     public static void persistTownManager() {
         MCTownsPlugin.getPlugin().persistTownManager();
     }
+    
+    public static RegionContainer getRegionContainer() {
+    	return WorldGuard.getInstance().getPlatform().getRegionContainer();
+    }
+    
 }

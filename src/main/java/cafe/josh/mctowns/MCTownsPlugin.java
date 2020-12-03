@@ -52,6 +52,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
 /**
  * The main class of the MCTowns plugin.
  *
@@ -331,7 +334,8 @@ public class MCTownsPlugin extends JavaPlugin {
 
     private void saveWorldGuardWorlds() throws Exception {
         for(World w : this.getServer().getWorlds()) {
-            MCTowns.getWorldGuardPlugin().getRegionManager(w).save();
+            MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w)).save();
+            
         }
     }
 

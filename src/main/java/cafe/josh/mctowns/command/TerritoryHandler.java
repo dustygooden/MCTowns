@@ -18,6 +18,8 @@ package cafe.josh.mctowns.command;
 
 import cafe.josh.mctowns.region.MCTownsRegion;
 import cafe.josh.mctowns.util.Players;
+
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import static net.jmhertlein.core.chat.ChatUtil.*;
 import cafe.josh.reflective.CommandDefinition;
@@ -262,7 +264,7 @@ public class TerritoryHandler extends CommandHandler implements CommandDefinitio
     }
 
     @CommandMethod(path = "territory redefine")
-    public void redefine() {
+    public void redefine() throws IncompleteRegionException {
         redefineActiveRegion(TownLevel.TERRITORY);
     }
 }

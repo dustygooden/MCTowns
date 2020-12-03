@@ -18,13 +18,16 @@ package cafe.josh.mctowns.command;
 
 import cafe.josh.mctowns.region.MCTownsRegion;
 import cafe.josh.mctowns.townjoin.TownJoinManager;
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.BlockVector2D;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.bukkit.selections.Polygonal2DSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Polygonal2DRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -50,7 +53,6 @@ import cafe.josh.mctowns.util.WGUtils;
 import cafe.josh.reflective.CommandDefinition;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -128,7 +130,7 @@ public abstract class CommandHandler implements CommandDefinition {
             return;
         }
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(reg.getWorldName()));
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(reg.getWorldName())));
 
         ProtectedRegion wgReg = regMan.getRegion(reg.getName());
 
@@ -140,7 +142,7 @@ public abstract class CommandHandler implements CommandDefinition {
 
         Flag<?> foundFlag = null;
 
-        for(Flag<?> flag : DefaultFlag.getFlags()) {
+        for(Flag<?> flag : WorldGuard.getInstance().getFlagRegistry()) {
             if(flag.getName().replace("-", "").equalsIgnoreCase(flagName.replace("-", ""))) {
                 foundFlag = flag;
                 break;
@@ -203,8 +205,8 @@ public abstract class CommandHandler implements CommandDefinition {
             return;
         }
 
-        ProtectedRegion wgReg = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(reg.getWorldName())).getRegion(reg.getName());
-
+        ProtectedRegion wgReg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(reg.getWorldName()))).getRegion(reg.getName());
+        
         if(wgReg == null) {
             localSender.sendMessage("Unable to get world guard region for " + reg.getName() + ". Perhaps the region was deleted outside of MCTowns?");
             return;
@@ -266,33 +268,39 @@ public abstract class CommandHandler implements CommandDefinition {
      * @return
      */
     protected ProtectedRegion getSelectedRegion(String desiredName) {
-        Selection selection;
+        Region selection = null;
         try {
-            selection = MCTowns.getWorldGuardPlugin().getWorldEdit().getSelection(localSender.getPlayer());
+        	BukkitPlayer bPlayer = BukkitAdapter.adapt(localSender.getPlayer());
+            selection = WorldEdit.getInstance().getSessionManager().get(bPlayer).getSelection(bPlayer.getWorld());
+            
             if(selection == null) {
                 throw new NullPointerException();
             }
         } catch(NullPointerException npe) {
             localSender.sendMessage("Error getting your WorldEdit selection. Did you forget to make a selection?");
             return null;
-        } catch(CommandException ce) {
+        } /*catch(CommandException ce) {
             localSender.sendMessage("Error hooking the WorldEdit plugin. Please tell your server owner.");
             ce.printStackTrace();
             return null;
-        }
+        }*/ catch (IncompleteRegionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         ProtectedRegion region;
-        if(selection instanceof Polygonal2DSelection) {
-            Polygonal2DSelection sel = (Polygonal2DSelection) selection;
+        if(selection instanceof Polygonal2DRegion) {
+            Polygonal2DRegion sel = (Polygonal2DRegion) selection;
 
-            region = new ProtectedPolygonalRegion(desiredName, sel.getNativePoints(), sel.getMinimumPoint().getBlockY(), sel.getNativeMaximumPoint().getBlockY());
-        } else if(selection instanceof CuboidSelection) {
-            CuboidSelection sel = (CuboidSelection) selection;
+            region = new ProtectedPolygonalRegion(desiredName, sel.getPoints(), sel.getMinimumPoint().getBlockY(), sel.getMaximumPoint().getBlockY());
+        } else if(selection instanceof CuboidRegion) {
+            CuboidRegion sel = (CuboidRegion) selection;
 
-            Location min = sel.getMinimumPoint(), max = sel.getMaximumPoint();
+            BlockVector3 min = sel.getMinimumPoint(), max = sel.getMaximumPoint();
+            
 
-            BlockVector minVect = new BlockVector(min.getBlockX(), min.getBlockY(), min.getBlockZ());
-            BlockVector maxVect = new BlockVector(max.getBlockX(), max.getBlockY(), max.getBlockZ());
+            BlockVector3 minVect = BlockVector3.at(min.getBlockX(), min.getBlockY(), min.getBlockZ());
+            BlockVector3 maxVect = BlockVector3.at(max.getBlockX(), max.getBlockY(), max.getBlockZ());
 
             region = new ProtectedCuboidRegion(desiredName, minVect, maxVect);
         } else {
@@ -305,8 +313,7 @@ public abstract class CommandHandler implements CommandDefinition {
     }
 
     public static boolean selectionIsWithinParent(ProtectedRegion reg, MCTownsRegion parent) {
-        ProtectedRegion parentReg = MCTowns.getWorldGuardPlugin().getRegionManager(
-                MCTowns.getWorldGuardPlugin().getServer().getWorld(parent.getWorldName())).getRegion(parent.getName());
+        ProtectedRegion parentReg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld(parent.getWorldName()))).getRegion(parent.getName());
 
         if(parentReg == null) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "!!!WARNING!!! MCTowns detected it is in an invalid state: A WorldGuard region was manually deleted. See message on next line.");
@@ -319,7 +326,7 @@ public abstract class CommandHandler implements CommandDefinition {
     }
 
     public static boolean regionIsWithinRegion(ProtectedRegion interior, ProtectedRegion exterior) {
-        for(BlockVector2D v : interior.getPoints()) {
+        for(BlockVector2 v : interior.getPoints()) {
             if(!(exterior.contains(v))) {
                 return false;
             }
@@ -381,15 +388,18 @@ public abstract class CommandHandler implements CommandDefinition {
         return msgs;
     }
 
-    public <V> void setFlag(ProtectedRegion region, Flag<V> flag, CommandSender sender, String value) throws InvalidFlagFormat {
-        region.setFlag(flag, flag.parseInput(MCTowns.getWorldGuardPlugin(), sender, value));
+    @SuppressWarnings("unchecked")
+	public <V> void setFlag(ProtectedRegion region, Flag<V> flag, CommandSender sender, String value) throws InvalidFlagFormat {
+        //region.setFlag(flag, flag.parseInput(MCTowns.getWorldGuardPlugin()), sender, value);
+    	//<v> val = (String) value;
+    	region.setFlag(flag,(V)value);
     }
 
     protected void runCommandAsConsole(String command) {
         server.dispatchCommand(server.getConsoleSender(), command);
     }
 
-    public void redefineActiveRegion(TownLevel regType) {
+    public void redefineActiveRegion(TownLevel regType) throws IncompleteRegionException {
         if(!localSender.hasMayoralPermissions()) {
             localSender.notifyInsufPermissions();
             return;
@@ -425,16 +435,22 @@ public abstract class CommandHandler implements CommandDefinition {
 
         Town t = localSender.getActiveTown();
 
-        RegionManager regMan = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(reg.getWorldName()));
+        RegionManager regMan = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(reg.getWorldName())));
 
-        Selection nuRegionBounds;
+        Region nuRegionBounds;
         try {
-            nuRegionBounds = MCTowns.getWorldGuardPlugin().getWorldEdit().getSelection(localSender.getPlayer());
-        } catch(CommandException ce) {
-            localSender.sendMessage("Error hooking the world edit plugn. Please inform your server owner.");
-            ce.printStackTrace();
-            return;
+        	BukkitPlayer bPlayer = BukkitAdapter.adapt(localSender.getPlayer());
+            nuRegionBounds = WorldEdit.getInstance().getSessionManager().get(bPlayer).getSelection(bPlayer.getWorld());
+            		
+        } 
+        finally {
+        	localSender.sendMessage("Error hooking the world edit plugn. Please inform your server owner.");
         }
+        //catch(CommandException ce) {
+        //    localSender.sendMessage("Error hooking the world edit plugn. Please inform your server owner.");
+        //    ce.printStackTrace();
+         //   return;
+        //}
 
         if(nuRegionBounds == null) {
             localSender.sendMessage(ERR + "You need to select what you want the region's boundaries to be updated to.");
@@ -450,23 +466,23 @@ public abstract class CommandHandler implements CommandDefinition {
         }
 
         if(oldWGReg instanceof ProtectedPolygonalRegion) {
-            if(!(nuRegionBounds instanceof Polygonal2DSelection)) {
+            if(!(nuRegionBounds instanceof Polygonal2DRegion)) {
                 localSender.sendMessage(ERR + "Error: selection type does not match region type. Must be a polygonal selection.");
                 return;
             }
-            Polygonal2DSelection polySel = (Polygonal2DSelection) nuRegionBounds;
+            Polygonal2DRegion polySel = (Polygonal2DRegion) nuRegionBounds;
 
-            nuWGRegion = new ProtectedPolygonalRegion(oldWGReg.getId(), polySel.getNativePoints(), polySel.getMaximumPoint().getBlockY(), polySel.getNativeMinimumPoint().getBlockY());
+            nuWGRegion = new ProtectedPolygonalRegion(oldWGReg.getId(), polySel.getPoints(), polySel.getMaximumPoint().getBlockY(), polySel.getMinimumPoint().getBlockY());
         } else if(oldWGReg instanceof ProtectedCuboidRegion) {
-            if(!(nuRegionBounds instanceof CuboidSelection)) {
+            if(!(nuRegionBounds instanceof CuboidRegion)) {
                 localSender.sendMessage(ERR + "Error: selection type does not match region type. Must be a cuboid selection.");
                 return;
             }
             nuWGRegion = new ProtectedCuboidRegion(oldWGReg.getId(),
-                    nuRegionBounds.getNativeMaximumPoint().toBlockVector(),
-                    nuRegionBounds.getNativeMinimumPoint().toBlockVector());
+                    nuRegionBounds.getMaximumPoint(),
+                    nuRegionBounds.getMinimumPoint());
         } else {
-            localSender.sendMessage(ERR + "Unsupported region type: " + oldWGReg.getTypeName());
+            localSender.sendMessage(ERR + "Unsupported region type: " + oldWGReg.getType());
             return;
         }
 

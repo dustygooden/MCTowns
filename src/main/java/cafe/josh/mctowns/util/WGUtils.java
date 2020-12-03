@@ -16,8 +16,8 @@
  */
 package cafe.josh.mctowns.util;
 
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.awt.geom.Line2D;
@@ -40,7 +40,7 @@ public class WGUtils {
      * @return number of XZ-unique blocks
      */
     public static int getNumXZBlocksInRegion(ProtectedRegion reg) {
-        BlockVector max, min;
+        BlockVector3 max, min;
         max = reg.getMaximumPoint();
         min = reg.getMinimumPoint();
 
@@ -67,12 +67,12 @@ public class WGUtils {
      * @return whether any edges of a region intersect
      */
     public static boolean intersectsEdges(ProtectedRegion a, ProtectedRegion b) {
-        List<BlockVector2D> pts1 = getPointsForRegionInCorrectOrder(a);
-        List<BlockVector2D> pts2 = getPointsForRegionInCorrectOrder(b);
-        BlockVector2D lastPt1 = pts1.get(pts1.size() - 1);
-        BlockVector2D lastPt2 = pts2.get(pts2.size() - 1);
-        for(BlockVector2D aPts1 : pts1) {
-            for(BlockVector2D aPts2 : pts2) {
+        List<BlockVector2> pts1 = getPointsForRegionInCorrectOrder(a);
+        List<BlockVector2> pts2 = getPointsForRegionInCorrectOrder(b);
+        BlockVector2 lastPt1 = pts1.get(pts1.size() - 1);
+        BlockVector2 lastPt2 = pts2.get(pts2.size() - 1);
+        for(BlockVector2 aPts1 : pts1) {
+            for(BlockVector2 aPts2 : pts2) {
 
                 Line2D line1 = new Line2D.Double(
                         lastPt1.getBlockX(),
@@ -101,18 +101,18 @@ public class WGUtils {
      *
      * @return
      */
-    public static List<BlockVector2D> getPointsForRegionInCorrectOrder(ProtectedRegion r) {
+    public static List<BlockVector2> getPointsForRegionInCorrectOrder(ProtectedRegion r) {
         if(r instanceof ProtectedCuboidRegion) {
-            List<BlockVector2D> pts = new LinkedList<>();
+            List<BlockVector2> pts = new LinkedList<>();
             int x1 = r.getMinimumPoint().getBlockX();
             int x2 = r.getMaximumPoint().getBlockX();
             int z1 = r.getMinimumPoint().getBlockZ();
             int z2 = r.getMaximumPoint().getBlockZ();
 
-            pts.add(new BlockVector2D(x1, z1));
-            pts.add(new BlockVector2D(x2, z1));
-            pts.add(new BlockVector2D(x2, z2));
-            pts.add(new BlockVector2D(x1, z2));
+            pts.add(BlockVector2.at(x1, z1));
+            pts.add(BlockVector2.at(x2, z1));
+            pts.add(BlockVector2.at(x2, z2));
+            pts.add(BlockVector2.at(x1, z2));
 
             return pts;
         } else {
