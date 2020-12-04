@@ -2,11 +2,13 @@ name: MCTowns
 main: cafe.josh.mctowns.MCTownsPlugin
 version: ${version}
 api-version: 1.16
-softdepend: [WorldGuard, Vault]
+author: GitHub/dustygooden
+depend: [WorldGuard]
+softdepend: [Vault]
 commands:
     mct:
         description: Base command for plugin-wide config or generic commands
-        usage: /mct (addtown | removetown | info | join | list | refuse | cancel | donate)
+        usage: /mct (addtown | removetown | info | join | list | refuse | cancel)
         aliases:
     town:
         description: base command for all town-based commands

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Joshua Michael Hertlein <jmhertlein@gmail.com>
+ * Copyright (C) 2020 Daniel Gauldin <danielgauldin@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ public class TerritoryHandler extends CommandHandler implements CommandDefinitio
         localSender.sendMessage(SUCC + "Plot removed.");
     }
 
-    @CommandMethod(path = "territory add player", requiredArgs = 1, filters = {"mayoralPerms"})
+    @CommandMethod(path = "territory add player", requiredArgs = 1, filters = {"mayoralPerms"}, helpMsg="Usage: /territory add player [Player_Name]")
     public void addPlayerToTerritory(CommandSender s, String[] args) {
         setNewCommand(s);
 
@@ -151,7 +151,7 @@ public class TerritoryHandler extends CommandHandler implements CommandDefinitio
         }
     }
 
-    @CommandMethod(path = "territory remove player", requiredArgs = 1, filters = {"mayoralPerms"})
+    @CommandMethod(path = "territory remove player", requiredArgs = 1, filters = {"mayoralPerms"}, helpMsg="Usage: /territory remove player [Player_Name]")
     public void removePlayerFromTerritory(CommandSender s, String playerName, Boolean recursive) {
         setNewCommand(s);
 
@@ -187,7 +187,7 @@ public class TerritoryHandler extends CommandHandler implements CommandDefinitio
         }
     }
 
-    @CommandMethod(path = "territory active", requiredArgs = 1)
+    @CommandMethod(path = "territory active", requiredArgs = 1, helpMsg="Usage: /territory active [Territory_Name]")
     public void setActiveTerritory(CommandSender s, String[] args) {
         setNewCommand(s);
         Town t = localSender.getActiveTown();

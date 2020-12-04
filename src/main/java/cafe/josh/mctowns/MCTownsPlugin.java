@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Joshua Michael Hertlein <jmhertlein@gmail.com>
+ * Copyright (C) 2020 Daniel Gauldin <danielgauldin@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ public class MCTownsPlugin extends JavaPlugin {
             MCTowns.logSevere("| |\\  | |__| | | |   _| || |____| |____ ");
             MCTowns.logSevere("|_| \\_|\\____/  |_|  |_____\\_____|______|");
             MCTowns.logSevere("");
-            MCTowns.logSevere("You're missing the WorldGuard plugin. This is a required dependency. See this wiki page: https://github.com/jmhertlein/MCTowns/wiki/Download-Methods#dependencies");
+            MCTowns.logSevere("You're missing the WorldGuard plugin. This is a required dependency.");
             MCTowns.logSevere("");
             MCTowns.logSevere("=========================================================");
             this.getPluginLoader().disablePlugin(this);
