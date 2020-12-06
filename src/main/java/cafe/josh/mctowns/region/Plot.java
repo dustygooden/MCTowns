@@ -25,7 +25,7 @@ import net.jmhertlein.core.location.Location;
 import cafe.josh.mctowns.MCTowns;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Sign;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -157,27 +157,26 @@ public class Plot extends MCTownsRegion {
         }
 
         org.bukkit.Location loc = Location.convertToBukkitLocation(Bukkit.getServer(), signLoc);
+        Block sign = loc.getBlock(); // This is the Block where the sign will go, hopefully it's an air Block
 
-        if(loc.getBlock().getType() != Material.AIR) {
-            return false;
+        if(sign.getType() != Material.AIR) {
+            return false; // This isn't an air Block, bummer
         }
 
-        loc.getBlock().setType(Material.ACACIA_SIGN);
+        sign.setType(Material.ACACIA_SIGN); // Create the sign
 
-        Sign sign = (Sign) loc.getBlock().getState();
+        org.bukkit.block.Sign signState = (org.bukkit.block.Sign) sign.getState();
 
-        //org.bukkit.block.Sign signData = (org.bukkit.block.Sign) sign.getData();
-        //signData.setFacingDirection(Location.getBlockFaceFromYaw(Location.getYawInOppositeDirection(referencePlayerLocation.getYaw())));
-        //sign.setData(signData);
+        signState.setLine(0, "[mct]");
+        signState.setLine(1, "For sale!");
+        signState.setLine(2, name);
+        signState.setLine(3, "Price: " + price);
+        signState.update(); // Write text to the sign
         
+        org.bukkit.block.data.type.Sign signData = (org.bukkit.block.data.type.Sign) sign.getBlockData();
+        signData.setRotation(Location.getBlockFaceFromYaw(Location.getYawInOppositeDirection(referencePlayerLocation.getYaw())));
+        sign.setBlockData(signData); // Rotate the sign to face the player
         
-        
-        sign.setLine(0, "[mct]");
-        sign.setLine(1, "For sale!");
-        sign.setLine(2, name);
-        sign.setLine(3, "Price: " + price);
-        sign.update();
-
         return true;
     }
 
@@ -199,8 +198,7 @@ public class Plot extends MCTownsRegion {
 
         org.bukkit.Location loc = new org.bukkit.Location(wgp.getServer().getWorld(worldName), middle.getBlockX(), middle.getBlockY(), middle.getBlockZ());
 
-        loc.setY(loc.getWorld().getHighestBlockYAt(loc));
-
+        loc.setY(loc.getWorld().getHighestBlockYAt(loc)+1);
         signLoc = Location.convertFromBukkitLocation(loc);
     }
 

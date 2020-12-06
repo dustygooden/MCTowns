@@ -50,10 +50,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 /**
  * The main class of the MCTowns plugin.
@@ -139,7 +137,7 @@ public class MCTownsPlugin extends JavaPlugin {
         abortSave = false;
 
         startPeriodicSaveTask();
-        startMetricsReporting();
+        //startMetricsReporting();
 
         MCTowns.logInfo("MCTowns is now fully loaded.");
     }
@@ -370,14 +368,14 @@ public class MCTownsPlugin extends JavaPlugin {
         return dataDirs;
     }
 
-    private void startMetricsReporting() {
+    /*private void startMetricsReporting() {
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
         } catch(IOException ex) {
             MCTowns.logWarning("Error: Unable to start metrics reporting.");
         }
-    }
+    }*/
 
     public TreeCommandExecutor getCommandExecutor() {
         return commands;

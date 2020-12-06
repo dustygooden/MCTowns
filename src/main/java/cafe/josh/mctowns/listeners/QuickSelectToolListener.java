@@ -66,7 +66,7 @@ public class QuickSelectToolListener implements Listener {
             return;
         }
 
-        if((e.getPlayer().getItemInHand().getType().compareTo(SELECT_TOOL)) != 0) {
+        if((e.getPlayer().getInventory().getItemInMainHand().getType().compareTo(SELECT_TOOL)) != 0) {
             return;
         }
 

@@ -146,7 +146,6 @@ public class MCTHandler extends CommandHandler implements CommandDefinition {
 
         try {
             for(World w : Bukkit.getWorlds()) {
-                //MCTowns.getWorldGuardPlugin().getRegionManager(w).save();
                 MCTowns.getRegionContainer().get(BukkitAdapter.adapt(w)).save();
             }
         } catch(StorageException ex) {
@@ -362,7 +361,6 @@ public class MCTHandler extends CommandHandler implements CommandDefinition {
             return;
         }
 
-        //ProtectedRegion plotReg = MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(p.getWorldName())).getRegion(p.getName());
         ProtectedRegion plotReg = MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(p.getWorldName()))).getRegion(p.getName());
         if(plotReg == null) {
             localSender.sendMessage(ERR + "The WorldGuard region for the plot you're trying to buy seems to have been deleted. Please notify your mayor.");
@@ -378,7 +376,6 @@ public class MCTHandler extends CommandHandler implements CommandDefinition {
         plotReg.getOwners().addPlayer(localSender.getPlayer().getName());
 
         localSender.sendMessage(ChatColor.GREEN + "You are now the proud owner of this plot.");
-        //doRegManSave(MCTowns.getWorldGuardPlugin().getRegionManager(server.getWorld(p.getWorldName())));
         doRegManSave(MCTowns.getRegionContainer().get(BukkitAdapter.adapt(server.getWorld(p.getWorldName()))));
 
         if(!townManager.matchPlayerToTowns(localSender.getPlayer()).contains(plotToBuy.getActiveTown())) {

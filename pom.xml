@@ -4,7 +4,7 @@
 
   <groupId>cafe.josh</groupId>
   <artifactId>MCTowns</artifactId>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>MCTowns</name>
@@ -50,12 +50,6 @@
       <version>1.2.30</version>
     </dependency>
     <dependency>
-      <groupId>org.mcstats.bukkit</groupId>
-      <artifactId>metrics</artifactId>
-      <scope>compile</scope>
-      <version>R8-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>cafe.josh</groupId>
       <artifactId>reflective</artifactId>
       <version>2.0-SNAPSHOT</version>
@@ -86,10 +80,6 @@
     <repository>
       <id>sk89q-repo</id>
       <url>https://maven.enginehub.org/repo/</url>
-    </repository>
-    <repository>
-      <id>Plugin Metrics</id>
-      <url>http://repo.mcstats.org/content/repositories/public</url>
     </repository>
   </repositories>
 
@@ -157,7 +147,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>2.4.1</version>
+            <version>3.2.4</version>
             <executions>
               <execution>
                 <phase>package</phase>
@@ -182,7 +172,9 @@
             </executions>
           </plugin>
           <plugin>
+          	<groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.3.0</version>
             <executions>
               <execution>
                 <phase>install</phase>
